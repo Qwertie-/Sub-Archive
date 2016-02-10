@@ -4,16 +4,16 @@ import redis
 
 import config
 
-r = praw.Reddit(user_agent="config.USER_AGENT")
+r = praw.Reddit(user_agent=config.USER_AGENT)
 
-class archiver(archiver):
+class archiver():
     def __init__(self, *args, **kwargs):
-    self.r = redis.StrictRedis(host=config.REDIS_HOST,
+        self.r = redis.StrictRedis(host=config.REDIS_HOST,
                                port=config.REDIS_PORT,
                                db=config.REDIS_DB,
                                password=config.REDIS_PASS)
 
-    super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 while True:
