@@ -1,6 +1,7 @@
 import praw
 import time
 import redis
+import subprocess
 
 import config
 
@@ -24,18 +25,21 @@ class Archiver():
         current_time = int(time.time())
         #Try to get the newest posts. There should be a better way to do this
         submissions = r.get_subreddit(config.SUBREDDIT).get_new(limit=config.LIMIT)
-        post_ids_in_timeframe = [] #Using posts from 1 day ago to avoid archiveing spam and other junk
+        posts_in_timeframe = [] #Using posts from 1 day ago to avoid archiveing spam and other junk
         for submission in submissions:
             sub_age = (current_time - submission.created_utc) / 60 / 60 / 24
             if sub_age > 1 and sub_age < 2:
-                post_ids_in_timeframe.append(submission.id)
-                print(submission.id)
+                posts_in_timeframe.append([submission.id,submission.url])
+        print(posts_in_timeframe)
+
+    def download(self, post_in_timeframe):
+        pass
 
 def main():
     archive = Archiver()
     while True:
         archive.fetch()
-        time.sleep(10)
+        time.sleep(config.REFRESH_TIME)
 
 if __name__ == "__main__":
     main()
