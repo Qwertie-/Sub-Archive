@@ -2,6 +2,7 @@ import praw
 import time
 import redis
 import subprocess
+import os
 
 import config
 
@@ -30,10 +31,14 @@ class Archiver():
             sub_age = (current_time - submission.created_utc) / 60 / 60 / 24
             if sub_age > 1 and sub_age < 2:
                 posts_in_timeframe.append([submission.id,submission.url])
-        print(posts_in_timeframe)
+        self.download(posts_in_timeframe)
 
-    def download(self, post_in_timeframe):
-        pass
+
+    def download(self, posts_in_timeframe):
+        for post in posts_in_timeframe:
+            os.mkdir(post[0])
+            subprocess.call("wget -q --show-progress --page-requisites --html-extension --convert-links --random-wait -e robots=off -nd --span-hosts -P " + post[0] + " " + post[1], shell=True)
+
 
 def main():
     archive = Archiver()
