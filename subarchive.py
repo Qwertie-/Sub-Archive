@@ -12,7 +12,7 @@ class Archiver():
     '''
     *   Redis is used to find the IPFS hash for a post using its post ID
     *   Connection to redis made here
-    '''
+    *   Disabled for now
     def __init__(self, *args, **kwargs):
         self.r = redis.StrictRedis(host=config.REDIS_HOST,
                                port=config.REDIS_PORT,
@@ -20,6 +20,7 @@ class Archiver():
                                password=config.REDIS_PASS)
 
         super().__init__(*args, **kwargs)
+    '''
 
     def fetch(self):
         #Used to find posts within a time frame
@@ -35,9 +36,12 @@ class Archiver():
 
 
     def download(self, posts_in_timeframe):
+        if not os.path.exists("/tmp/subarchive"):
+            os.mkdir("/tmp/subarchive")
         for post in posts_in_timeframe:
-            os.mkdir(post[0])
-            subprocess.call("wget -q --show-progress --page-requisites --html-extension --convert-links --random-wait -e robots=off -nd --span-hosts -P " + post[0] + " " + post[1], shell=True)
+            if not os.path.exists("/tmp/subarchive/" + post[0]):
+                os.mkdir("/tmp/subarchive/" + post[0])
+                subprocess.call("wget -q --show-progress --page-requisites --html-extension --convert-links --random-wait -e robots=off -nd --span-hosts -P /tmp/subarchive/" + post[0] + " " + post[1], shell=True)
 
 
 def main():
