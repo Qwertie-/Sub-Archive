@@ -34,7 +34,10 @@ class Archiver():
                 posts_in_timeframe.append([submission.id,submission.url])
         self.download(posts_in_timeframe)
 
-
+    '''
+    Downloads the page linked on reddit
+    Input: [reddit post id, url]
+    '''
     def download(self, posts_in_timeframe):
         if not os.path.exists("/tmp/subarchive"):
             os.mkdir("/tmp/subarchive")
@@ -42,7 +45,10 @@ class Archiver():
             if not os.path.exists("/tmp/subarchive/" + post[0]):
                 os.mkdir("/tmp/subarchive/" + post[0])
                 subprocess.call("wget -q --show-progress --page-requisites --html-extension --convert-links --random-wait -e robots=off -nd --span-hosts -P /tmp/subarchive/" + post[0] + " " + post[1], shell=True)
+            self.publish(post[0])
 
+    def publish(self, ID):
+        subprocess.call("ipfs add -r /tmp/subarchive/" + ID, shell=True)
 
 def main():
     archive = Archiver()
