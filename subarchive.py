@@ -30,9 +30,9 @@ class Archiver():
         posts_in_timeframe = [] #Using posts from 1 day ago to avoid archiveing spam and other junk
         for submission in submissions:
             sub_age = (current_time - submission.created_utc) / 60 / 60 / 24
-            if sub_age > 1 and sub_age < 2:
+            if 1 < sub_age < 2:
                 posts_in_timeframe.append([submission.id,submission.url])
-        self.download(posts_in_timeframe)
+        return(posts_in_timeframe)
 
     '''
     Downloads the page linked on reddit
@@ -45,16 +45,17 @@ class Archiver():
             if not os.path.exists("/tmp/subarchive/" + post[0]):
                 os.mkdir("/tmp/subarchive/" + post[0])
                 subprocess.call("wget -q --show-progress --page-requisites --html-extension --convert-links --random-wait -e robots=off -nd --span-hosts -P /tmp/subarchive/" + post[0] + " " + post[1], shell=True)
-            self.publish(post[0])
+        return(posts_in_timeframe)
 
-    def publish(self, ID):
-        subprocess.call("ipfs add -r /tmp/subarchive/" + ID, shell=True)
+    def publish(self, IDs):
+        for ID in IDs:
+            subprocess.call("ipfs add -r /tmp/subarchive/" + ID[0], shell=True)
 
 def main():
     archive = Archiver()
-    while True:
-        archive.fetch()
-        time.sleep(config.REFRESH_TIME)
+    posts = archive.fetch()
+    IDs = archive.download(posts)
+    archive.publish(IDs)
 
 if __name__ == "__main__":
     main()

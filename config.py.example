@@ -4,6 +4,5 @@ REDIS_DB = 0
 REDIS_PASS = 'whatever_your_redis_pass_is or None'
 
 SUBREDDIT = 'subreddit'
-REFRESH_TIME = 3600
 LIMIT = 10
 USER_AGENT = 'Subarchive default user agent (change this)'
