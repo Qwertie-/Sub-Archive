@@ -5,3 +5,6 @@ Requires python3, wget, go-ipfs and redis(not used yet). redis could probably be
 
 
 Usage: rename config.py.example to config.py and fill it out with the settings you want then run "python3 subarchive.py" to start
+
+
+NOTICE: I have chosen to abandon this project as the latest reddit api made things needlessly complicated (requiring api keys for a script that only reads data)
